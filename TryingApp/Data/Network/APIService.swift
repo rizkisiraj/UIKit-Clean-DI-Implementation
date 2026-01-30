@@ -39,4 +39,23 @@ final class APIService {
             .decode(type: PhotoListResponseDTO.self, decoder: decoder)
             .eraseToAnyPublisher()
     }
+    
+    func fetchPhoto(id: Int) -> AnyPublisher<PhotoSingleResponseDTO, Error> {
+        
+        let url = URL(string: "https://boringapi.com/api/v1/photo/\(id)")!
+        let request = URLRequest(url: url)
+        
+        return session.dataTaskPublisher(for: request)
+            .tryMap { output -> Data in
+                let response = output.response as? HTTPURLResponse
+                
+                guard (200..<300).contains(response?.statusCode ?? 0) else {
+                    throw URLError(.badServerResponse)
+                }
+                
+                return output.data
+            }
+            .decode(type: PhotoSingleResponseDTO.self, decoder: decoder)
+            .eraseToAnyPublisher()
+    }
 }

@@ -9,14 +9,14 @@ import Foundation
 
 struct FavoritePhotoLocalMapper {
 
-    private static let formatter: DateFormatter = {
+    nonisolated private static let formatter: DateFormatter = {
         let f = DateFormatter()
         f.locale = Locale(identifier: "en_US_POSIX")
         f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         return f
     }()
 
-    static func toDomain(dto: FavoritePhotoLocalDTO) -> Photo {
+    nonisolated static func toDomain(dto: FavoritePhotoLocalDTO) -> Photo {
 
         let date = formatter.date(from: dto.createdAt) ?? Date()
 

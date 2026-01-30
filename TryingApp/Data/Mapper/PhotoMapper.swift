@@ -24,4 +24,8 @@ struct PhotoMapper {
             id: dto.id, width: dto.width, createdAt: date, title: dto.title, description: dto.description, url: dto.url
         )
     }
+    
+    static func map(dtos: [PhotoDTO]) -> [Photo] {
+        dtos.map { map(dto: $0) }
+    }
 }
