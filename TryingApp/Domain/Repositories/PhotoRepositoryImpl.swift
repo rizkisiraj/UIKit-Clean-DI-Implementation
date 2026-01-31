@@ -56,12 +56,15 @@ final class PhotoRepositoryImpl: PhotoRepository {
     }
     
     
-    func getPhotos(page: Int) -> AnyPublisher<[Photo], Error> {
+    func getPhotos(page: Int) -> AnyPublisher<PagedPhotos, Error> {
 
         let remotePublisher =
             apiService.fetchPhotos(page: page)
                 .map { responseDTO in
-                    PhotoMapper.map(dtos: responseDTO.photos)
+                    (
+                        photos: PhotoMapper.map(dtos: responseDTO.photos),
+                        totalPages: responseDTO.totalPages
+                    )
                 }
 
         let favoriteIDsPublisher =
@@ -73,8 +76,8 @@ final class PhotoRepositoryImpl: PhotoRepository {
 
         return remotePublisher
             .combineLatest(favoriteIDsPublisher)
-            .map { photos, favoriteIDs in
-                photos.map { photo in
+            .map { result, favoriteIDs in
+                let updatedPhotos = result.photos.map { photo in
                     Photo(
                         id: photo.id,
                         width: photo.width,
@@ -85,6 +88,11 @@ final class PhotoRepositoryImpl: PhotoRepository {
                         isFavorite: favoriteIDs.contains(photo.id)
                     )
                 }
+                
+                return PagedPhotos(
+                    photos: updatedPhotos,
+                    totalPages: result.totalPages
+                )
             }
             .eraseToAnyPublisher()
     }

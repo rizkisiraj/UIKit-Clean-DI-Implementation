@@ -25,12 +25,15 @@ final class APIService {
         ]
         
         let request = URLRequest(url: components.url!)
+        print(request)
         
         return session.dataTaskPublisher(for: request)
             .tryMap { output -> Data in
                 let response = output.response as? HTTPURLResponse
                 
-                guard (200..<300).contains(response?.statusCode ?? 0) else {
+                if !(200..<300).contains(response?.statusCode ?? 0) {
+                    let body = String(data: output.data, encoding: .utf8)
+                    print("BODY:", body ?? "-")
                     throw URLError(.badServerResponse)
                 }
                 

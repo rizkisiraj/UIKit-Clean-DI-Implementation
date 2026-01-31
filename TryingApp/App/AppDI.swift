@@ -22,8 +22,6 @@ final class DependencyContainer {
             favoriteStorage: favoriteStorage)
     }()
 
-    // MARK: - Use Cases
-
     lazy var getPhotosUseCase: GetPhotoUseCase = {
         GetPhotoUseCase(repository: photoRepository)
     }()

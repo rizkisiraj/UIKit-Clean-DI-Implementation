@@ -7,7 +7,7 @@
 import Combine
 
 protocol PhotoRepository {
-    func getPhotos(page: Int) -> AnyPublisher<[Photo], Error>
+    func getPhotos(page: Int) -> AnyPublisher<PagedPhotos, Error>
     func getPhotoDetail(id: Int) -> AnyPublisher<Photo, Error>
     func getFavoritePhotos() -> AnyPublisher<[Photo], Never>
     func toggleFavorite(photo: Photo)

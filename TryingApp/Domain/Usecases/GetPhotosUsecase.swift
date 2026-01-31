@@ -15,7 +15,7 @@ struct GetPhotoUseCase {
         self.repository = repository
     }
     
-    func execute(id: Int) -> AnyPublisher<[Photo], Error> {
-        repository.getPhotos()
+    func execute(page: Int) -> AnyPublisher<PagedPhotos, Error> {
+        repository.getPhotos(page: page)
     }
 }
