@@ -15,7 +15,7 @@ struct FavoritePhotoUsecase {
         self.repository = repository
     }
     
-    func execute() -> AnyPublisher<[Photo], Error> {
+    func execute() -> AnyPublisher<[Photo], Never> {
         repository.getFavoritePhotos()
     }
 }
