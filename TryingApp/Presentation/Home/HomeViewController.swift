@@ -12,19 +12,15 @@ final class HomeViewController: UIViewController {
 
     private let contentView = HomeView()
 
-    private let getPhotosUseCase: GetPhotoUseCase
+    private let getPostsUseCase: GetPostsUseCase
 
-    private var photos: [Photo] = []
-    private var currentPage: Int = 1
-    private var totalPages = 1
+    private var posts: [Post] = []
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Init
-
-    init(getPhotosUseCase: GetPhotoUseCase) {
-        self.getPhotosUseCase = getPhotosUseCase
+    init(getPostsUseCase: GetPostsUseCase) {
+        self.getPostsUseCase = getPostsUseCase
         super.init(nibName: nil, bundle: nil)
-        title = "Photos"
+        title = "Posts"
     }
 
     required init?(coder: NSCoder) {
@@ -56,38 +52,25 @@ final class HomeViewController: UIViewController {
         }
 
         contentView.collectionView.register(
-            PhotoGridCell.self,
-            forCellWithReuseIdentifier: PhotoGridCell.reuseIdentifier
+            PostGridCell.self,
+            forCellWithReuseIdentifier: PostGridCell.reuseIdentifier
         )
     }
 
     private func bind() {
-        
-        guard currentPage <= totalPages else { return }
-        
-        getPhotosUseCase.execute(page: 1)
+        getPostsUseCase.execute()
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 if case let .failure(error) = completion {
                     print("Error:", error)
                 }
-            } receiveValue: { [weak self] pagedPhotos in
+            } receiveValue: { [weak self] posts in
                 guard let self else { return }
                 
-                if currentPage == 1 {
-                    self.totalPages = pagedPhotos.totalPages
-                }
-                
-                if currentPage == 1 {
-                    self.photos = pagedPhotos.photos
-                } else {
-                    self.photos.append(contentsOf: pagedPhotos.photos)
-                }
-                
-                self.currentPage += 1
+                self.posts = posts
                 self.contentView.collectionView.reloadData()
                 
-                print("Loaded photos:", photos.count)
+                print("Loaded photos:", posts.count)
             }
             .store(in: &cancellables)
     }
@@ -97,18 +80,18 @@ extension HomeViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        photos.count
+        posts.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotoGridCell.reuseIdentifier,
+            withReuseIdentifier: PostGridCell.reuseIdentifier,
             for: indexPath
-        ) as! PhotoGridCell
+        ) as! PostGridCell
 
-        cell.configure(with: photos[indexPath.item])
+        cell.configure(with: posts[indexPath.item])
 
         return cell
     }
@@ -134,10 +117,5 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                             willDisplay cell: UICollectionViewCell,
                             forItemAt indexPath: IndexPath) {
-
-        contentView.notifyIfNearBottom(
-            indexPath: indexPath,
-            totalItems: photos.count
-        )
     }
 }

@@ -15,11 +15,19 @@ final class DependencyContainer {
     lazy var favoriteStorage: FavoriteStorage = {
         FavoriteStorageImpl()
     }()
+    
+    lazy var favoritePostStorage: FavoriteStoragePosts = {
+        FavoriteStoragePostsImpl()
+    }()
 
     lazy var photoRepository: PhotoRepository = {
         PhotoRepositoryImpl(
             apiService: apiService,
             favoriteStorage: favoriteStorage)
+    }()
+    
+    lazy var postRepository: PostRepository = {
+        PostRepositoryImpl(apiService: apiService, favoriteStoragePosts: favoritePostStorage)
     }()
 
     lazy var getPhotosUseCase: GetPhotoUseCase = {
@@ -36,6 +44,10 @@ final class DependencyContainer {
 
     lazy var toggleFavoriteUseCase: ToggleFavoriteUsecase = {
         ToggleFavoriteUsecase(repository: photoRepository)
+    }()
+    
+    lazy var getPostsUseCase: GetPostsUseCase = {
+        GetPostsUseCase(repository: postRepository)
     }()
 }
 

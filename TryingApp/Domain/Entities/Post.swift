@@ -9,6 +9,13 @@ struct Post: Codable {
     let userId: Int
     let id: Int
     let title: String
-    let description: String
+    let body: String
     var isFavorite: Bool = false
+    
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case id
+        case title
+        case body
+    }
 }

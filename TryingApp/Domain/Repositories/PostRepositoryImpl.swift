@@ -37,7 +37,7 @@ final class PostRepositoryImpl: PostRepository {
                         userId: post.id,
                         id: post.id,
                         title: post.title,
-                        description: post.description,
+                        body: post.body,
                         isFavorite: favoriteIDs.contains(post.id)
                     )
                 }

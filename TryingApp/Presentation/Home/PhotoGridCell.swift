@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class PhotoGridCell: UICollectionViewCell {
+final class PostGridCell: UICollectionViewCell {
 
-    static let reuseIdentifier = "PhotoGridCell"
+    static let reuseIdentifier = "PostGridCell"
 
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
@@ -53,12 +53,11 @@ final class PhotoGridCell: UICollectionViewCell {
         ])
     }
 
-    func configure(with photo: Photo) {
-        titleLabel.text = photo.title
+    func configure(with post: Post) {
+        titleLabel.text = post.title
         imageView.image = nil
 
-        // Very simple image loading (no cache, no lib)
-        if let url = URL(string: photo.url) {
+        if let url = URL(string: "https://picsum.photos/id/\(post.id)/200") {
             URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
                 guard let data,
                       let image = UIImage(data: data) else { return }
