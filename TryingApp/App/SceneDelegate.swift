@@ -15,20 +15,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
-            let window = UIWindow(windowScene: windowScene)
+        let window = UIWindow(windowScene: windowScene)
 
-            let container = DependencyContainer()
+        let container = DependencyContainer()
 
-            let homeVC = HomeViewController(
-                container: container
-            )
+        let homeVC = HomeViewController(
+            container: container
+        )
+    
+        let homeNav = UINavigationController(rootViewController: homeVC)
+        homeNav.tabBarItem = UITabBarItem(
+            title: "Posts",
+            image: UIImage(systemName: "newspaper"),
+            selectedImage: UIImage(systemName: "newspaper.fill"))
 
-            let nav = UINavigationController(rootViewController: homeVC)
+        let favoritesVC = FavoriteViewController(
+            container: container
+        )
+        
+        let favoritesNav = UINavigationController(rootViewController: favoritesVC)
+        favoritesNav.tabBarItem = UITabBarItem(
+            title: "Favorites",
+            image: UIImage(systemName: "heart"),
+            selectedImage: UIImage(systemName: "heart.fill"),
+        )
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [homeNav, favoritesNav]
 
-            window.rootViewController = nav
-            window.makeKeyAndVisible()
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
 
-            self.window = window
+        self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

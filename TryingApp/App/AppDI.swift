@@ -38,8 +38,8 @@ final class DependencyContainer {
         GetPhotoDetailUsecase(repository: photoRepository)
     }()
 
-    lazy var getFavoritePostsUseCase: FavoritePhotoUsecase = {
-        FavoritePhotoUsecase(repository: photoRepository)
+    lazy var getFavoritePostsUseCase: GetFavoritePostUseCase = {
+        GetFavoritePostUseCase(repository: postRepository)
     }()
 
     lazy var toggleFavoriteUseCase: ToggleFavoriteUsecase = {
@@ -53,7 +53,10 @@ final class DependencyContainer {
     lazy var getPostDetailUseCase: GetPostDetailUseCase = {
         GetPostDetailUseCase(repository: postRepository)
     }()
-
+    
+    lazy var toggleFavoritePostUseCase: ToggleFavoritePostUsecase = {
+        ToggleFavoritePostUsecase(repository: postRepository)
+    }()
 }
 
 

@@ -26,8 +26,6 @@ final class DetailView: UIView {
             fatalError("init(coder:) has not been implemented")
         }
 
-        // MARK: - Setup
-
         private func setupView() {
             backgroundColor = .systemBackground
 
@@ -89,12 +87,11 @@ final class DetailView: UIView {
         func render(post: Post) {
             titleLabel.text = post.title
             descriptionLabel.text = post.body
-            updateFavorite(isFavorite: post.isFavorite)
         }
 
         func updateFavorite(isFavorite: Bool) {
 
-            let title = isFavorite ? "Unfavorite" : "Favorite"
+            let title = isFavorite ? "Remove from Favorite" : "Add to Favorite"
             favoriteButton.setTitle(title, for: .normal)
         }
     

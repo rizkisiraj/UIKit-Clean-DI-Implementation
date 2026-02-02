@@ -2,27 +2,26 @@
 //  HomeViewController.swift
 //  TryingApp
 //
-//  Created by Rizki Siraj on 31/01/26.
+//  Created by Rizki Siraj on 02/02/26.
 //
+
 
 import UIKit
 import Combine
 
-final class HomeViewController: UIViewController {
+final class FavoriteViewController: UIViewController {
 
-    private let contentView = HomeView()
+    private let contentView = FavoriteView()
 
-    private let getPostsUseCase: GetPostsUseCase
-    private let container: DependencyContainer
+    private let getFavoritePostsUseCase: GetFavoritePostUseCase
 
     private var posts: [Post] = []
     private var cancellables = Set<AnyCancellable>()
 
     init(container: DependencyContainer) {
-        self.getPostsUseCase = container.getPostsUseCase
-        self.container = container
+        self.getFavoritePostsUseCase = container.getFavoritePostsUseCase
         super.init(nibName: nil, bundle: nil)
-        title = "Posts"
+        title = "Favorites"
     }
 
     required init?(coder: NSCoder) {
@@ -60,7 +59,7 @@ final class HomeViewController: UIViewController {
     }
 
     private func bind() {
-        getPostsUseCase.execute()
+        getFavoritePostsUseCase.execute()
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 if case let .failure(error) = completion {
@@ -77,19 +76,9 @@ final class HomeViewController: UIViewController {
             }
             .store(in: &cancellables)
     }
-    
-    private func goToDetail(post: Post) {
-        let vc = DetailViewController(
-            postID: post.id,
-            container: container,
-            isFavorite: post.isFavorite
-        )
-        
-        navigationController?.pushViewController(vc, animated: true)
-    }
 }
 
-extension HomeViewController: UICollectionViewDataSource {
+extension FavoriteViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
@@ -110,7 +99,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
 }
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
+extension FavoriteViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -125,15 +114,11 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension HomeViewController: UICollectionViewDelegate {
+extension FavoriteViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView,
                             willDisplay cell: UICollectionViewCell,
                             forItemAt indexPath: IndexPath) {
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let post = posts[indexPath.item]
-        goToDetail(post: post)
-    }
 }
