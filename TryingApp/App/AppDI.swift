@@ -49,6 +49,11 @@ final class DependencyContainer {
     lazy var getPostsUseCase: GetPostsUseCase = {
         GetPostsUseCase(repository: postRepository)
     }()
+    
+    lazy var getPostDetailUseCase: GetPostDetailUseCase = {
+        GetPostDetailUseCase(repository: postRepository)
+    }()
+
 }
 
 

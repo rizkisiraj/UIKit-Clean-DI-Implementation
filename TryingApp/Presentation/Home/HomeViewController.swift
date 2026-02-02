@@ -13,12 +13,14 @@ final class HomeViewController: UIViewController {
     private let contentView = HomeView()
 
     private let getPostsUseCase: GetPostsUseCase
+    private let container: DependencyContainer
 
     private var posts: [Post] = []
     private var cancellables = Set<AnyCancellable>()
 
-    init(getPostsUseCase: GetPostsUseCase) {
-        self.getPostsUseCase = getPostsUseCase
+    init(container: DependencyContainer) {
+        self.getPostsUseCase = container.getPostsUseCase
+        self.container = container
         super.init(nibName: nil, bundle: nil)
         title = "Posts"
     }
@@ -74,6 +76,15 @@ final class HomeViewController: UIViewController {
             }
             .store(in: &cancellables)
     }
+    
+    private func goToDetail(post: Post) {
+        let vc = DetailViewController(
+            postID: post.id,
+            container: container
+        )
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension HomeViewController: UICollectionViewDataSource {
@@ -117,5 +128,10 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                             willDisplay cell: UICollectionViewCell,
                             forItemAt indexPath: IndexPath) {
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.item]
+        goToDetail(post: post)
     }
 }

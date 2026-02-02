@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let container = DependencyContainer()
 
             let homeVC = HomeViewController(
-                getPostsUseCase: container.getPostsUseCase
+                container: container
             )
 
             let nav = UINavigationController(rootViewController: homeVC)
