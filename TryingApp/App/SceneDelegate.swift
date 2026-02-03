@@ -40,8 +40,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             selectedImage: UIImage(systemName: "heart.fill"),
         )
         
+        let aboutVC = AboutViewController()
+        
+        let aboutNav = UINavigationController(rootViewController: aboutVC)
+        aboutNav.tabBarItem = UITabBarItem(
+            title: "About",
+            image: UIImage(systemName: "person"),
+            selectedImage: UIImage(systemName: "person.fill"),
+        )
+        
+        
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [homeNav, favoritesNav]
+        tabBarController.viewControllers = [homeNav, favoritesNav, aboutNav]
 
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()

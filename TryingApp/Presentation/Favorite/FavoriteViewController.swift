@@ -72,7 +72,6 @@ final class FavoriteViewController: UIViewController {
                 self.contentView.collectionView.reloadData()
                 
                 print("Loaded photos:", posts.count)
-                print(posts.map(\.isFavorite))
             }
             .store(in: &cancellables)
     }

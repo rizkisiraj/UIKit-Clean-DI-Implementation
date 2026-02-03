@@ -90,7 +90,6 @@ final class DetailView: UIView {
         }
 
         func updateFavorite(isFavorite: Bool) {
-
             let title = isFavorite ? "Remove from Favorite" : "Add to Favorite"
             favoriteButton.setTitle(title, for: .normal)
         }

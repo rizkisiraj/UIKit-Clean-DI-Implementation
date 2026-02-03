@@ -72,8 +72,7 @@ final class HomeViewController: UIViewController {
                 self.posts = posts
                 self.contentView.collectionView.reloadData()
                 
-                print("Loaded photos:", posts.count)
-                print(posts.map(\.isFavorite))
+                print("dipanggil")
             }
             .store(in: &cancellables)
     }

@@ -13,7 +13,7 @@ final class DetailViewController: UIViewController {
     private let contentView = DetailView()
     
     private let postID: Int
-    private let isFavorite: Bool
+    private var isFavorite: Bool
     private var currentPost: Post?
     private let getPostDetailUseCase: GetPostDetailUseCase
     private let toggleFavoritePostUseCase: ToggleFavoritePostUsecase
@@ -24,7 +24,6 @@ final class DetailViewController: UIViewController {
     init(postID: Int, container: DependencyContainer, isFavorite: Bool) {
         self.postID = postID
         self.isFavorite = isFavorite
-        print(isFavorite)
         self.getPostDetailUseCase = container.getPostDetailUseCase
         self.toggleFavoritePostUseCase = container.toggleFavoritePostUseCase
         self.getFavoritePostsUseCase = container.getFavoritePostsUseCase
@@ -56,7 +55,6 @@ final class DetailViewController: UIViewController {
     }
     
     private func loadDetail() {
-        print("yes")
         getPostDetailUseCase.execute(id: postID)
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -65,9 +63,11 @@ final class DetailViewController: UIViewController {
                 }
             } receiveValue: { [weak self] post in
                 self?.currentPost = post
+                self?.currentPost?.isFavorite = self?.isFavorite ?? false
                 self?.contentView.render(post: post)
                 self?.contentView.imageView.load(urlString: "https://picsum.photos/id/\(post.id)/200/300")
                 self?.contentView.updateFavorite(isFavorite: self?.isFavorite ?? false)
+                print("ini is favorite: \(self?.isFavorite ?? false)")
             }
             .store(in: &cancellables)
     }
@@ -79,16 +79,28 @@ final class DetailViewController: UIViewController {
         
         toggleFavoritePostUseCase.execute(post: post)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                
-                let updated = Post(
-                    userId: post.userId, id: post.id, title: post.title, body: post.body, isFavorite: !post.isFavorite
-                )
-                
-                self.currentPost = updated
-                self.contentView.updateFavorite(isFavorite: updated.isFavorite)
-            }
+            .sink(
+                receiveCompletion: { completion in
+                    if case let .failure(error) = completion {
+                        print(error)
+                    }
+                },
+                receiveValue: { [weak self] _ in
+                    guard let self else { return }
+
+                    let updated = Post(
+                        userId: post.userId,
+                        id: post.id,
+                        title: post.title,
+                        body: post.body,
+                        isFavorite: !post.isFavorite
+                    )
+
+                    self.currentPost = updated
+                    self.isFavorite = updated.isFavorite
+                    self.contentView.updateFavorite(isFavorite: self.isFavorite)
+                }
+            )
             .store(in: &cancellables)
     }
 }
